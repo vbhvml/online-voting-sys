@@ -1,0 +1,13 @@
+[package]
+name = "QuizModule"
+version = "1.0.0"
+authors = ["Shreyansh"]
+
+[addresses]
+QuizModule = "0x1bd6210ed95f8afda37f5254b41f0288250f40c11399c6420d77f4db3124becf"
+
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "mainnet", subdir = "aptos-move/framework/aptos-framework" }
+AptosStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "mainnet", subdir = "aptos-move/framework/aptos-stdlib" }
+
+[dev-dependencies]
