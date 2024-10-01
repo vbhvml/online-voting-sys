@@ -1,34 +1,59 @@
-
-module QuizModule::BlockchainQuiz {
+module VotingSystem::BlockchainVoting {
     use aptos_framework::signer;
     use aptos_framework::coin;
     use aptos_framework::aptos_coin::AptosCoin;
 
-    /// Struct to store quiz details.
-    struct Quiz has store, key {
-        correct_answer: u64,  // Correct answer for the quiz
-        reward: u64,          // Reward tokens for a correct answer
+    struct Voting has store, key {
+        option_a_votes: u64,
+        option_b_votes: u64,
+        reward: u64,
+        is_active: bool,
     }
 
-    /// Initialize a new quiz with a correct answer and reward.
-    public entry fun create_quiz(owner: &signer, correct_answer: u64, reward: u64) {
-        let quiz = Quiz {
-            correct_answer,
+    // Mock function to get the age of the voter
+    fun get_age(voter: address): u8 {
+        // In a real implementation, this function would fetch the age from a trusted source
+        18 // Assuming all voters are 18 for this example
+    }
+
+    public entry fun create_voting(owner: &signer, reward: u64) {
+        let voting = Voting {
+            option_a_votes: 0,
+            option_b_votes: 0,
             reward,
+            is_active: true,
         };
-        move_to(owner, quiz);
+        move_to(owner, voting);
     }
 
-    /// Submit an answer and get rewarded if correct.
-    public entry fun submit_answer(player: &signer, quiz_owner: address, answer: u64) acquires Quiz {
-        let quiz = borrow_global<Quiz>(quiz_owner);
+    public entry fun submit_vote(voter: &signer, voting_owner: address, option: u8) acquires Voting {
+        let voting = borrow_global_mut<Voting>(voting_owner);
+        assert!(voting.is_active, 1);
 
-        // Check if the answer is correct
-        if (answer == quiz.correct_answer) {
-            // Reward the player with tokens
-            let reward_amount = quiz.reward;
-            let reward = coin::withdraw<AptosCoin>(player, reward_amount);
-            coin::deposit<AptosCoin>(signer::address_of(player), reward);
-        };
+        // Check if the voter is underage
+        let voter_age = get_age(signer::address_of(voter));
+        assert!(voter_age >= 18, 2); // Assuming the legal voting age is 18
+
+        if (option == 0) {
+            voting.option_a_votes = voting.option_a_votes + 1;
+        } else if (option == 1) {
+            voting.option_b_votes = voting.option_b_votes + 1;
+        } else {
+            return;
+        }
+
+        let reward_amount = voting.reward;
+        let reward = coin::withdraw<AptosCoin>(voting_owner, reward_amount);
+        coin::deposit<AptosCoin>(signer::address_of(voter), reward);
+    }
+
+    public entry fun end_voting(owner: &signer) acquires Voting {
+        let voting = borrow_global_mut<Voting>(signer::address_of(owner));
+        voting.is_active = false;
+    }
+
+    public fun get_results(voting_owner: address): (u64, u64) acquires Voting {
+        let voting = borrow_global<Voting>(voting_owner);
+        (voting.option_a_votes, voting.option_b_votes)
     }
 }
