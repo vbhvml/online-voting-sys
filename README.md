@@ -95,9 +95,6 @@ Users can call the `msg` function in the `send_message::sup` module to store or 
 ---
 ## Deployment
 -- https://explorer.aptoslabs.com/txn/6023586827?network=testnet
--- Transaction Hash: 0x46595d3dbe946e7ecd10eaeddfa5f31cf5473de2facf0f1c4f2fe51cfefbd35d
 
+![apatos](https://github.com/user-attachments/assets/3d80901c-afbd-4652-a562-eb5edda8dd32)
 
-## Conclusion
-
-This blockchain-based voting system enhances the security and transparency of the voting process by utilizing the decentralized nature of blockchain. Additionally, voters are incentivized with rewards, promoting higher participation rates. The messaging contract adds a supplementary feature for users to store and update messages on the blockchain.
